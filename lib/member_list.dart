@@ -19,14 +19,14 @@ class MemberList extends StatefulWidget {
 
 class _MemberListState extends State<MemberList> {
   @override
-  initState() {
+  void initState() {
     super.initState();
     DB.inst.routine();
     Variables.init();
     Sender.sendAll();
   }
 
-  static final popUpText = [
+  static const popUpText = [
     'Sorted By',
     'Reminder Log',
     'Message Template',
@@ -43,8 +43,31 @@ class _MemberListState extends State<MemberList> {
   String nameLike = '';
   @override
   Widget build(BuildContext context) {
-    Future<List<Member>> memberList =
-        DB.inst.selectAll(nameLike: nameLike, orderBy: Variables.sortBy);
+    Future<List<Member>> memberList = DB.inst.selectAll(nameLike).then((value) {
+      switch (Variables.sortBy) {
+        case 'Membership_Number':
+          value.sort((a, b) {
+            var iA = int.parse(a.id.substring(3, 7));
+            var iB = int.parse(b.id.substring(3, 7));
+            return iA.compareTo(iB);
+          });
+          break;
+        case 'Name':
+          value.sort((a, b) => a.name.compareTo(b.name));
+          break;
+        case 'Due_Date':
+          value.sort((a, b) {
+            var smaller = a.dueDate < b.dueDate;
+            if (smaller) {
+              return -1;
+            } else {
+              return 1;
+            }
+            // return a.dueDate < b.dueDate ? -1 : 1;
+          });
+      }
+      return value;
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -283,6 +306,15 @@ class _UpdateMemberFormState extends State<UpdateMemberForm> {
         ),
       );
     }
+    forms.add(
+      TextFormField(
+        decoration: InputDecoration(
+          labelText: 'Last SMS',
+        ),
+        initialValue: mem.lastSMS.toString(),
+        readOnly: true,
+      ),
+    );
     return Form(
       key: _formKey,
       child: Column(

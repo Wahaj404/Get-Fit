@@ -14,7 +14,7 @@ class _ReminderLogState extends State<ReminderLog> {
     var logs = DB.inst.getLogs(nameLike);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Message Log'),
+        title: Text('Reminder Log'),
       ),
       body: Center(
         child: FutureBuilder<List<Map<String, dynamic>>>(

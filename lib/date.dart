@@ -61,9 +61,12 @@ class Date {
     return _daysInMonth[_month];
   }
 
+  bool isSame(Date other) =>
+      _year == other._year && _month == other._month && _day == other._day;
+
   bool operator <(Date other) =>
-      _year == other._year ||
-      _year == other._year && _month == other._month ||
+      _year < other._year ||
+      _year == other._year && _month < other._month ||
       _year == other._year && _month == other._month && _day < other._day;
 
   static int difference(Date one, Date two) {

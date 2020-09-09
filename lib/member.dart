@@ -98,8 +98,8 @@ class Member {
 
   Member(this.id, this.name, this.phone, this.email, this.joinDate,
       this.dueDate, this.fees, this.paid)
-      : lastEmail = Date(1, 1, 2020),
-        lastSMS = Date(1, 1, 2020);
+      : lastEmail = Date(21, 7, 2020),
+        lastSMS = Date(21, 7, 2020);
   Member.fromMap(Map<String, dynamic> map)
       : id = map[columns[0]],
         name = map[columns[1]],
@@ -140,6 +140,9 @@ class Member {
   }
 
   bool shouldSend() {
+    if (lastSMS.isSame(Date.now())) {
+      return false;
+    }
     final diff = Date.difference(dueDate, Date.now());
     return (diff == 2 || diff == 0 || diff == 4) && !paid;
   }

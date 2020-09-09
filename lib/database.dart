@@ -119,10 +119,8 @@ class DB {
     (await database).insert('Members', mem.toMap()).catchError(onError);
   }
 
-  Future<List<Member>> selectAll(
-      {String nameLike = '', String orderBy = 'Name'}) async {
+  Future<List<Member>> selectAll([nameLike = '']) async {
     return (await (await database).query('Members',
-            orderBy: orderBy,
             where: 'Name LIKE ? OR Name LIKE ?',
             whereArgs: [nameLike + '%', '% ' + nameLike + '%']))
         .map((e) => Member.fromMap(e))
@@ -149,11 +147,11 @@ class DB {
   }
 
   Future<bool> allSent() async {
-    return (await (await database).query(
-      'Members',
-      where: 'Fees_Paid = ? AND Last_Email != ? AND Last_SMS != ?',
-      whereArgs: [0, Date.now().toString(), Date.now().toString()],
-    ))
-        .isEmpty;
+    for (var mem in await selectAll()) {
+      if (mem.shouldSend()) {
+        return false;
+      }
+    }
+    return true;
   }
 }

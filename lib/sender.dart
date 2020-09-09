@@ -16,10 +16,15 @@ class Sender {
   }
 
   static void sendChecked(Member mem) {
-    if (mem.shouldSend()) {
+    if (mem.shouldSend() && _isValidTime()) {
       sendSMS(mem);
       sendEmail(mem);
     }
+  }
+
+  static bool _isValidTime() {
+    var hour = DateTime.now().hour;
+    return hour > 8 && hour < 20;
   }
 
   static Future<Null> sendSMS(Member mem) async {

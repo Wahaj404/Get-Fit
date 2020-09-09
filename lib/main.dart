@@ -23,7 +23,7 @@ class Background {
   }
 
   static void init() {
-    print('init()');
+    print('Background.init()');
     var initializationSettingsAndroid = AndroidInitializationSettings('logo');
     var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
@@ -37,9 +37,6 @@ class Background {
       init();
     }
     print("${DateTime.now()} Executing background tasks.");
-    if (DateTime.now().hour == 0 && DateTime.now().minute < 10) {
-      DB.inst.clearLog();
-    }
     if (!(await DB.inst.allSent())) {
       showNotificationWithDefaultSound();
     }
