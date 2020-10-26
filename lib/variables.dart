@@ -5,6 +5,7 @@ class Variables {
   static String _sortBy;
   static String _message;
   static String _email;
+  static String _thanks;
 
   static String get sortBy => _sortBy;
   static set sortBy(String value) {
@@ -24,11 +25,18 @@ class Variables {
     DB.inst.updateVariable('Email', value);
   }
 
+  static String get thanks => _thanks;
+  static set thanks(String value) {
+    _thanks = value;
+    DB.inst.updateVariable('Thanks', value);
+  }
+
   static void init() async {
     print('Variables.init()');
     _message = await DB.inst.selectVariable('Message');
     _email = await DB.inst.selectVariable('Email');
     _sortBy = await DB.inst.selectVariable('Sort_By');
+    _thanks = await DB.inst.selectVariable('Thanks');
   }
 
   static String parse(String template, Member mem) {

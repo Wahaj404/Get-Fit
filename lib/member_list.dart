@@ -30,7 +30,8 @@ class _MemberListState extends State<MemberList> {
     'Sorted By',
     'Reminder Log',
     'Message Template',
-    'Email Template'
+    'Email Template',
+    'Thank You Template'
   ];
   static final popUpOptions = popUpText
       .map(
@@ -120,8 +121,11 @@ class _MemberListState extends State<MemberList> {
                 );
               } else {
                 bool message = value == popUpText[2];
+                bool email = value == popUpText[3];
                 var controller = TextEditingController(
-                    text: message ? Variables.message : Variables.email);
+                    text: message
+                        ? Variables.message
+                        : email ? Variables.email : Variables.thanks);
                 showDialog<void>(
                   context: context,
                   barrierDismissible: true,
@@ -156,8 +160,10 @@ class _MemberListState extends State<MemberList> {
                           onPressed: () {
                             if (message) {
                               Variables.message = controller.text;
-                            } else {
+                            } else if (email) {
                               Variables.email = controller.text;
+                            } else {
+                              Variables.thanks = controller.text;
                             }
                             Navigator.of(context).pop(false);
                           },
@@ -343,8 +349,9 @@ class _UpdateMemberFormState extends State<UpdateMemberForm> {
                         mem.joinDate = Date.fromString(controllers[4].text);
                         mem.dueDate = Date.fromString(controllers[5].text);
                         mem.fees = int.parse(controllers[6].text);
-                        if (mem.paid != checkStatus) {
+                        if (mem.paid != checkStatus && checkStatus) {
                           mem.dueDate.nextMonth();
+                          Sender.sendThanks(mem);
                         }
                         mem.paid = checkStatus;
                         DB.inst.update(mem);

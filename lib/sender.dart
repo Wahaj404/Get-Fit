@@ -24,7 +24,7 @@ class Sender {
 
   static bool _isValidTime() {
     var hour = DateTime.now().hour;
-    return hour > 8 && hour < 20;
+    return hour > 8 && hour < 21;
   }
 
   static Future<Null> sendSMS(Member mem) async {
@@ -44,6 +44,25 @@ class Sender {
       DB.inst.insertLog(
         mem,
         'SMS not sent at ${DateTime.now().toString().substring(0, 19)}',
+      );
+    }
+  }
+
+  static Future<Null> sendThanks(Member mem) async {
+    print("sendThanks called.");
+    try {
+      final result = await methodChannel.invokeMethod('SMS',
+          {"phone": mem.phone, "msg": Variables.parse(Variables.thanks, mem)});
+      print(result);
+      DB.inst.insertLog(
+        mem,
+        'Thank you SMS sent at ${DateTime.now().toString().substring(0, 19)}',
+      );
+    } on PlatformException catch (e) {
+      print(e.toString());
+      DB.inst.insertLog(
+        mem,
+        'Thank you SMS not sent at ${DateTime.now().toString().substring(0, 19)}',
       );
     }
   }

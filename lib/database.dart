@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -11,7 +10,7 @@ class DB {
   DB._privateCtor();
   static final inst = DB._privateCtor();
 
-  static Database _database;
+  Database _database;
   Future<Database> get database async {
     if (_database == null) {
       _database = await _initDatabase();
@@ -20,8 +19,7 @@ class DB {
   }
 
   Future<Database> _initDatabase() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, name);
+    final path = join((await getExternalStorageDirectory()).path, name);
     return await openDatabase(
       path,
       version: 1,
@@ -65,6 +63,9 @@ class DB {
               ''');
     await db.execute('''
               INSERT INTO Variables (Name, Value) VALUES ('Email', '')
+              ''');
+    await db.execute('''
+              INSERT INTO Variables (Name, Value) VALUES ('Thanks', '')
               ''');
     await db.execute('''
               INSERT INTO Variables (Name, Value) VALUES ('DBUpdate', '')

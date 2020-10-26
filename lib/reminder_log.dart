@@ -11,7 +11,8 @@ class _ReminderLogState extends State<ReminderLog> {
   String nameLike = '';
   @override
   Widget build(BuildContext context) {
-    var logs = DB.inst.getLogs(nameLike);
+    var logs =
+        DB.inst.getLogs(nameLike).then((value) => value.reversed.toList());
     return Scaffold(
       appBar: AppBar(
         title: Text('Reminder Log'),
